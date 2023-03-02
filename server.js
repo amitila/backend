@@ -4,6 +4,7 @@ import {
     usersRouter,
     studentsRouter
 } from './routes/index.js'
+import connect from './database/database.js'
 
 dotenv.config() //must have
 const app = express()
@@ -18,5 +19,6 @@ app.get('/', (req, res) => {
     res.send('respone from root router')
 })
 app.listen(port, async(req, res) => {
+    await connect()
     console.log(`listening on port: ${port}`)
 })
