@@ -6,6 +6,7 @@ import {
     userRepository,
     studentRepository
 } from '../repositories/index.js'
+import HttpStatusCode from '../exceptions/HttpStatusCode.js';
 import { EventEmitter } from "node:events";
 const myEvent = new EventEmitter()
 //listen
@@ -16,7 +17,7 @@ myEvent.on('event.register.user', (params) => {
 const login = async (req, res) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array()})
+        return res.status(HttpStatusCode.BAD_REQUEST).json({ errors: errors.array()})
     }
     const {email, password} = req.body
     console.log(email, password)
@@ -24,7 +25,7 @@ const login = async (req, res) => {
     //call repository
     await userRepository.login({email, password})
 
-    res.status(200).json({
+    res.status(HttpStatusCode.OK).json({
         message: "Login user successfully"
     })
 }
@@ -41,13 +42,13 @@ const register = async (req, res) => {
     //Event Emitter
     myEvent.emit('event.register.user', req.body)
 
-    res.status(200).json({
+    res.status(HttpStatusCode.OK).json({
         message: "Register user successfully"
     })
 }
 
 const getDetailUser = async (req, res) => {
-    res.status(200).json({
+    res.status(HttpStatusCode.OK).json({
         message: "Get detail of user successfully"
     })
 }

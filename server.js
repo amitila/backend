@@ -16,7 +16,7 @@ app.use('/users', usersRouter)
 app.use('/students', studentsRouter)
 
 app.get('/', (req, res) => {
-    res.send('respone from root router')
+    res.send('response from root router')
 })
 app.listen(port, async(req, res) => {
     await connect()
