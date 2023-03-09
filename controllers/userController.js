@@ -8,6 +8,7 @@ import {
 } from '../repositories/index.js'
 import HttpStatusCode from '../exceptions/HttpStatusCode.js';
 import { EventEmitter } from "node:events";
+import Exception from '../exceptions/Exception.js';
 const myEvent = new EventEmitter()
 //listen
 myEvent.on('event.register.user', (params) => {
@@ -36,15 +37,32 @@ const register = async (req, res) => {
         name,
         email, 
         password,
+        phoneNumber,
         address
     } = req.body
-    await userRepository.register({name, email, password, address})
+    
     //Event Emitter
-    myEvent.emit('event.register.user', req.body)
+    myEvent.emit('event.register.user', {email, phoneNumber})
 
-    res.status(HttpStatusCode.OK).json({
-        message: "Register user successfully"
-    })
+    try {
+        const user = await userRepository.register({
+            name, 
+            email, 
+            password, 
+            phoneNumber, 
+            address
+        })
+        res.status(HttpStatusCode.INSERT_OK).json({
+            message: "Register user successfully",
+            data: user
+        })
+    } catch (exception) {
+        debugger
+        res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+            message: exception.toString()
+        })
+    }
+    
 }
 
 const getDetailUser = async (req, res) => {
